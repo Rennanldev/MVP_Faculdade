@@ -7,6 +7,8 @@ if (!token) {
   window.location.href = '../login/index.html';
 }
 
+let eventoEditandoId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   const addBtn = document.getElementById('add-event-btn');
   const cancelBtn = document.getElementById('cancel-add-event-btn');
@@ -21,12 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = '../login/index.html';
   });
 
-
-  // Carrega eventos do banco ao abrir a página
+  // Carrega eventos
   carregarEventos();
 
-  // Abre o modal
+  // Abre o modal pra cadastrar
   addBtn.addEventListener('click', () => {
+    eventoEditandoId = null;
+    document.getElementById('event-form-container').querySelector('h4').textContent = 'Cadastrar Evento';
+    document.querySelector('.btn-salvar').textContent = 'Salvar Evento';
+    form.reset();
     overlay.classList.add('ativo');
   });
 
@@ -34,16 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function fecharModal() {
     overlay.classList.remove('ativo');
     form.reset();
+    eventoEditandoId = null;
   }
 
   cancelBtn.addEventListener('click', fecharModal);
   cancelFormBtn.addEventListener('click', fecharModal);
-
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) fecharModal();
   });
 
-  // Submete o formulário
+  // Submete o formulário (cadastrar ou editar)
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -53,14 +58,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const local = document.getElementById('event-local').value.trim();
     const descricao = document.getElementById('event-theme').value.trim();
     const imagem_url = document.getElementById('event-imagem').value.trim();
+
     if (!nome || !data || !local) {
       alert('Preencha pelo menos nome, data e local.');
       return;
     }
 
+    const method = eventoEditandoId ? 'PUT' : 'POST';
+    const url = eventoEditandoId ? `${API}/eventos/${eventoEditandoId}` : `${API}/eventos`;
+
     try {
-      const resposta = await fetch(`${API}/eventos`, {
-        method: 'POST',
+      const resposta = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -71,11 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const dados = await resposta.json();
 
       if (!resposta.ok) {
-        alert(dados.erro || 'Erro ao cadastrar evento.');
+        alert(dados.erro || 'Erro ao salvar evento.');
         return;
       }
 
-      alert('Evento cadastrado com sucesso!');
+      alert(eventoEditandoId ? 'Evento atualizado com sucesso!' : 'Evento cadastrado com sucesso!');
       fecharModal();
       carregarEventos();
 
@@ -107,7 +116,10 @@ async function carregarEventos() {
         ${evento.horario ? `<p><strong>Horário:</strong> ${evento.horario}</p>` : ''}
         ${evento.local ? `<p><strong>Local:</strong> ${evento.local}</p>` : ''}
         ${evento.descricao ? `<p><strong>Descrição:</strong> ${evento.descricao}</p>` : ''}
-        <button class="delete-btn" onclick="excluirEvento(${evento.id})">Excluir</button>
+        <div class="card-actions">
+          <button class="edit-btn" onclick="abrirEdicao(${evento.id}, '${evento.nome.replace(/'/g, "\\'")}', '${evento.data}', '${evento.horario || ''}', '${evento.local.replace(/'/g, "\\'")}', '${(evento.descricao || '').replace(/'/g, "\\'")}', '${evento.imagem_url || ''}')">Editar</button>
+          <button class="delete-btn" onclick="excluirEvento(${evento.id})">Excluir</button>
+        </div>
       </div>
     `).join('');
 
@@ -115,6 +127,22 @@ async function carregarEventos() {
     container.innerHTML = '<p>Erro ao carregar eventos.</p>';
     console.error(erro);
   }
+}
+
+function abrirEdicao(id, nome, data, horario, local, descricao, imagem_url) {
+  eventoEditandoId = id;
+
+  document.getElementById('event-form-container').querySelector('h4').textContent = 'Editar Evento';
+  document.querySelector('.btn-salvar').textContent = 'Atualizar Evento';
+
+  document.getElementById('event-title').value = nome;
+  document.getElementById('event-date').value = data;
+  document.getElementById('event-horario').value = horario;
+  document.getElementById('event-local').value = local;
+  document.getElementById('event-theme').value = descricao;
+  document.getElementById('event-imagem').value = imagem_url;
+
+  document.getElementById('modal-overlay').classList.add('ativo');
 }
 
 async function excluirEvento(id) {

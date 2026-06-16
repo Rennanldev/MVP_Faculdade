@@ -349,3 +349,32 @@ footer.contato p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 2
   color: var(--verde-medio);
   font-weight: 500;
 }
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 18px 18px;
+}
+
+.edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px;
+  background: transparent;
+  color: var(--verde-medio);
+  border: 1.5px solid var(--verde-medio);
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.edit-btn:hover {
+  background: var(--verde-medio);
+  color: var(--branco);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 124, 89, 0.3);
+}
