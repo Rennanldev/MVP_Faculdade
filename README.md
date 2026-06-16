@@ -67,21 +67,32 @@ Indiretamente, o projeto também beneficia os administradores das unidades de co
 
 ---
 
-## 💻 Como executar o projeto localmente
+## ▶️ Como Executar o Projeto
 
-> ⚠️ *Instruções específicas serão adicionadas conforme o desenvolvimento do MVP.*
+### Pré-requisitos
 
-Caso você queira rodar o projeto localmente, siga os passos abaixo (exemplo para o git bash):
+- [Node.js](https://nodejs.org/) instalado na máquina
 
+### Passo a passo
+
+**1. Clone o repositório**
 ```bash
-# Clone o repositório
-git clone https://github.com/Rennanldev/Projeto-faculdade.git
+git clone https://github.com/RennanIdev/MVP_Faculdade.git
+```
 
-# Acesse a pasta do projeto
-cd Projeto-faculdade
+**2. Acesse a pasta do backend**
+```bash
+cd MVP_Faculdade/src/backend
+```
 
-# Acesse a pasta da página principal
-cd paginaprincipal
+**3. Instale as dependências**
+```bash
+npm install
+```
 
-# Rode o projeto
-start paginaprincipal.html
+**4. Inicie o servidor**
+```bash
+node server.js
+```
+
+**5. Acesse no navegador**
