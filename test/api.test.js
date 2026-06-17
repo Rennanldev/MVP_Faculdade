@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost:3000/api';
 let token = '';
 let eventoId = null;
 
-describe('🔐 Autenticação', () => {
+describe('Autenticação', () => {
   test('Login com credenciais corretas retorna token', async () => {
     const resposta = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST',
